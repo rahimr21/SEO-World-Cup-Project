@@ -35,4 +35,4 @@ def get_current_news():
 # print(r.status_code)
 # print(r.json())
     
-print(get_current_news())
+# print(get_current_news())
