@@ -4,7 +4,7 @@ import database
 
 def home_menu():
     while True:
-        print("\nWorld Cup")
+        print("\n--- WORLD CUP CLI COMPANION ---")
         print("1. Team Information")
         print("2. Player Information")
         print("3. Current Games")
@@ -54,4 +54,63 @@ def news_menu():
         print(f"\n> {article['title']}")
         print(f" URL: {article['url']}")
 
- 
+def team_menu():
+    print("\n--- Team Info Menu ---")
+    query = input("Enter team name (full or short, eg. Argentina, ARG): ").strip()
+    if not in query:
+        return
+    
+    print("Fetching teams...")
+    all_teams = api.fetch_teams()
+    matched_teams = []
+
+    #filtering teams
+    for team in all_teams:
+        name_match = query.lower() in team["name"].lower()
+        code_match = team["code"] and query.lower() == team["code"].lower()
+        if name_match or code_match:
+            matched_teams.append(team)
+    
+    if not matched_teams:
+        print("No matching team found.")
+        return
+
+    #2nd choice list in case multiple teams found
+    print("\nSelect a team:")
+    for idx, team in enumerate(matched_teams, 1):
+        print(f"{idx}. {team['name']} ({team['code'] or 'N/A'})")
+    
+    sel = input("Enter selection number: ").strip()
+
+    try:
+        team_idx = int(sel) - 1
+        selected_team = matched_teams[team_idx]
+    except (ValueError, IndexError):
+        print("Invalid selection.")
+        return
+    
+    #submenu inside teams
+    while True:
+        is_fav = database.is_team_favoite(selected_team["id"])
+        fav_label = "[Favorite]" if is_fav else "[Not Favorite]"
+        print(f"n\--- {selected_team['name']} Menu {fav_label} ---")
+        print("1. View Standings and Group Info")
+        print("2. View Matches and News")
+        print("3. Add/Remove Favorite")
+        print("4. Return to Main Menu")
+
+        choice = input("Enter option: ").strip()
+        if choice == "1":
+            show_team_standings(selected_team["name"])
+        elif choice == "2":
+            show_team_matches(selected_team["name"])
+        elif choice == "3":
+            if is_fav:
+                database.remove_team(selected_team["id"])
+                print("Removed from favorites.")
+            else:
+                database.add_team(selected_team["id"], selected_team["name"])
+                print("Added to favorites.")
+        elif choice == "4":
+            break
+
