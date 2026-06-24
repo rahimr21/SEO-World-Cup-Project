@@ -22,6 +22,7 @@ def get_football_headers():
         "x-apisports-key": FOOTBALL_KEY
     }
 
+#Fetches all teams as a list
 def fetch_teams():
     url = f"{FOOTBALL_URL}/teams"
     params = {
@@ -42,7 +43,63 @@ def fetch_teams():
         })
     return teams_list
 
-print(fetch_teams())
+#gets all wc matches for a specific team
+def fetch_fixtures(team_id):
+    url = f"{FOOTBALL_URL}/fixtures"
+    params = {
+        "team": team_id,
+        "league": LEAGUE_ID,
+        "season": SEASON
+    }
+
+    response = requests.get(url, headers=get_football_headers(), params=params)
+    data = response.json()
+    return data.get("response", [])
+
+#gets current group standings 
+def fetch_standings():
+    url = f"{FOOTBALL_URL}/standings"
+    params = {
+        "league": LEAGUE_ID,
+        "season": SEASON
+    }
+
+    response = requests.get(url, headers=get_football_headers(), params=params)
+    data = response.json()
+
+    if data.get("response"):
+        return data["response"][0]["league"]["standings"]
+    return []
+
+#live scores
+def fetch_live_scores():
+    url = f"{FOOTBALL_URL}/fixtures"
+    params = {
+        "live": "all"
+    }
+    response = requests.get(url, headers=get_football_headers(), params=params)
+    data = response.json()
+    
+    live_matches = []
+    for item in data.get("response", []):
+        if item.get("league", {}).get("id") == LEAGUE_ID:
+            live_matches.append(item)
+    return live_matches
+
+#searching for player by name
+def search_player(last_name):
+    url = f"{FOOTBALL_URL}/players"
+    params = {
+        "search": last_name,
+        "league": LEAGUE_ID,
+        "season": SEASON
+    }
+
+    response = requests.get(url, headers=get_football_headers(), params=params)
+    data = response.json()
+    return data.get("response", [])
+
+# print(fetch_teams())
 def get_news(team):
     params = {
         "q": f"{team} AND World Cup 2026",
