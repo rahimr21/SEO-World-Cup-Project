@@ -114,3 +114,23 @@ def team_menu():
         elif choice == "4":
             break
 
+def show_team_standings(team_name):
+    print("\nFetching standings...")
+    groups = api.fetch_standings()
+
+    #searching for team in table
+    target_group = None
+    for group in grops:
+        for row in group:
+            if row["team"]["name"].lower == team_name.lower():
+                target_group = group
+                break
+        if target_group:
+            break
+    
+    if not target_group:
+        print("Standings not found.")
+        return
+
+    print(f"\nGroup Standings")
+    #not done this function yet
