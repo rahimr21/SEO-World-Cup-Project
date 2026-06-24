@@ -13,9 +13,9 @@ NEWS_KEY = os.getenv("NEWS_KEY")
 #Base URLs
 FOOTBALL_URL = "https://v3.football.api-sports.io"
 
-#ID's for API to fetch 2026 World Cup Stuff
+#ID's for API to fetch 2026 World Cup Stuff (changing to 2022 for free plan)
 LEAGUE_ID = 1
-SEASON = 2026
+SEASON = 2022
 
 def get_football_headers():
     return {
