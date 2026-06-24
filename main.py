@@ -57,7 +57,7 @@ def news_menu():
 def team_menu():
     print("\n--- Team Info Menu ---")
     query = input("Enter team name (full or short, eg. Argentina, ARG): ").strip()
-    if not in query:
+    if not query:
         return
     
     print("Fetching teams...")
