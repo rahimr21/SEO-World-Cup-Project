@@ -23,12 +23,16 @@ def news_menu():
     print("\nNews Menu")
     print("1. General World Cup News")
     print("2. Team News")
+    print("3. Player News")
     choice = input("Enter the number which you want to select: ")
     if choice == "1":
         articles = get_current_news()
     elif choice == "2":
         team = input("Enter the team name: ")
         articles = get_news(team)
+    elif choice == "3":
+        player = input("Enter the player name: ")
+        articles = get_player_news(player)
     else:
         print("Invalid choice. Please try again.")
         return
