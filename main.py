@@ -10,7 +10,7 @@ def home_menu():
         print("3. Current Games")
         print("4. View Favorites")
         print("5. News")
-        print("5. Exit")
+        print("6. Exit")
         choice = input("Enter the number which you want to select: ").strip()
 
         if choice == "1":
@@ -134,3 +134,5 @@ def show_team_standings(team_name):
 
     print(f"\nGroup Standings")
     #not done this function yet
+
+home_menu()
