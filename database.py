@@ -16,9 +16,9 @@ def init_db():
     """)
     #creating fav player table
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS favorite_teams (
-            team_id INTEGER PRIMARY KEY,
-            team_name TEXT
+        CREATE TABLE IF NOT EXISTS favorite_players (
+            player_id INTEGER PRIMARY KEY,
+            player_name TEXT
     """)
 
     conn.commit()

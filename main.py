@@ -93,7 +93,7 @@ def team_menu():
     while True:
         is_fav = database.is_team_favorite(selected_team["id"])
         fav_label = "[Favorite]" if is_fav else "[Not Favorite]"
-        print(f"n\--- {selected_team['name']} Menu {fav_label} ---")
+        print(f"\n--- {selected_team['name']} Menu {fav_label} ---")
         print("1. View Standings and Group Info")
         print("2. View Matches and News")
         print("3. Add/Remove Favorite")
@@ -103,7 +103,7 @@ def team_menu():
         if choice == "1":
             show_team_standings(selected_team["name"])
         elif choice == "2":
-            show_team_matches(selected_team["name"])
+            show_team_matches(selected_team["id"], selected_team["name"])
         elif choice == "3":
             if is_fav:
                 database.remove_team(selected_team["id"])
@@ -122,7 +122,7 @@ def show_team_standings(team_name):
     target_group = None
     for group in groups:
         for row in group:
-            if row["team"]["name"].lower == team_name.lower():
+            if row["team"]["name"].lower() == team_name.lower():
                 target_group = group
                 break
         if target_group:
