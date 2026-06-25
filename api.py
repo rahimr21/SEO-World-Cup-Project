@@ -102,8 +102,9 @@ def search_player(last_name):
 # print(fetch_teams())
 def get_news(team):
     params = {
-        "q": f"{team} AND World Cup 2026",
-        "sortBy": "publishedAt",
+        "q": f'"{team}" AND "World Cup"',
+        "searchIn": "title,description",
+        "sortBy": "relevancy",
         "apiKey": NEWS_KEY
     }
     r = requests.get("https://newsapi.org/v2/everything", params=params)
@@ -112,18 +113,20 @@ def get_news(team):
 
 def get_player_news(player):
     pararms = {
-        "q": f"{player} AND World Cup 2026",
-        "sortBy": "publishedAt",
+        "q": f'"{player}" AND "World Cup"',
+        "searchIn": "title,description",
+        "sortBy": "relevancy",
         "apiKey": NEWS_KEY
     }
-    r = requests.get("https://newsapi.org/v2/everything", params=pararms)
+    r = requests.get("https://newsapi.org/v2/everything", params=params)
     articles = r.json().get("articles", [])
     return articles[:5]
 
 def get_current_news():
     params = {
-        "q": "World Cup 2026",
-        "sortBy": "publishedAt",
+        "q": '"World Cup"',
+        "searchIn": "title",
+        "sortBy": "relevancy",
         "apiKey": NEWS_KEY
     }
     r = requests.get("https://newsapi.org/v2/everything", params=params)
