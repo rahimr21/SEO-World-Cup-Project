@@ -112,7 +112,7 @@ def get_news(team):
     return articles[:5]
 
 def get_player_news(player):
-    pararms = {
+    params = {
         "q": f'"{player}" AND "World Cup"',
         "searchIn": "title,description",
         "sortBy": "relevancy",
