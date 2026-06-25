@@ -277,8 +277,8 @@ def current_games_menu():
             away_score = f["goals"]["away"]
             time = f["fixture"]["status"]["elapsed"]
             print(f"[LIVE {time}'] {home} {home_score} - {away_score} {away}")
-        else:
-            print("No live games currently.")
+    else:
+        print("No live games currently.")
 
 def favorites_menu():
     print("\n--- Favorites Menu ---")
