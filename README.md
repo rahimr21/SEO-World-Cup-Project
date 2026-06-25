@@ -11,6 +11,7 @@ Look up live scores, team info, player stats, and the latest news - all in one p
 - Save favorite teams and players
 
 ## APIs Used
+- [API-Football](https://www.api-football.com/) — Restful API for Football Data
 - [NewsAPI](https://newsapi.org/) — latest World Cup headlines
 
 ## Setup
@@ -33,9 +34,9 @@ Then navigate the menu:
 4. View Favorites
 5. News
 
-- **Team Information** - enter a team name to see past results, upcoming games, and standings
+- **Team Information** - enter a team name to see past results, upcoming games, and group standings
 - **Player Standings** - search a player by name to see their stats
-- **Current Games** - view live scores
+- **Current Games** - view live scores and match data
 - **View Favorites** - see your saved teams and players
 - **News** - get general World Cup headlines or news by team or player
 
@@ -44,4 +45,4 @@ Uses SQLite to store favorite teams and players
 
 ## Contact
 - Anika Hakim - hakimanika3529@gmail.com - [GitHub](https://github.com/Anikahakim)
-- Rahim Rashid - EMAIL - [GitHub]
+- Rahim Rashid - rahimrashid06@gmail.com - [GitHub](https://github.com/rahimr21)
