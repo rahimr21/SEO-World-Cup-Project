@@ -91,7 +91,7 @@ def team_menu():
     
     #submenu inside teams
     while True:
-        is_fav = database.is_team_favoite(selected_team["id"])
+        is_fav = database.is_team_favorite(selected_team["id"])
         fav_label = "[Favorite]" if is_fav else "[Not Favorite]"
         print(f"n\--- {selected_team['name']} Menu {fav_label} ---")
         print("1. View Standings and Group Info")
@@ -120,7 +120,7 @@ def show_team_standings(team_name):
 
     #searching for team in table
     target_group = None
-    for group in grops:
+    for group in groups:
         for row in group:
             if row["team"]["name"].lower == team_name.lower():
                 target_group = group
@@ -132,7 +132,150 @@ def show_team_standings(team_name):
         print("Standings not found.")
         return
 
-    print(f"\nGroup Standings")
-    #not done this function yet
+    print(f"\nGroup Standings:")
+    print(f"{'Rank':<5} {'Team':<20} {'Played':<8} {'GD':<5} {'Points':<6}")
+    print("-" * 50)
+
+    for row in target_group:
+        name = row["team"]["name"]
+        rank = row["rank"]
+        played = row["all"]["played"]
+        gd = row["goalsDiff"]
+        points = row["points"]
+
+        #highlighting right team in cli
+        marker = "-> " if name.lower() == team_name.lower() else "   "
+        print(f"{marker}{rank:<2} {name:<20} {played:<8} {gd:<5} {points:<6}")
+
+def show_team_matches(team_id, team_name):
+    print(f"\nFetching matches for {team_name}...")
+    fixtures = api.fetch_fixtures(team_id)
+
+    past_matches = []
+    future_matches = []
+
+    for f in fixtures:
+        status = f["fixture"]["status"]["short"]
+        if status in ["FT", "AET", "PEN"]:
+            past_matches.append(f)
+        else:
+            future_matches.append(f)
+
+    print("\nPrevious Matches:")
+    if not past_matches:
+        print("  No previous matches found.")
+    else:
+        for f in past_matches:
+            home = f["teams"]["home"]["name"]
+            away = f["teams"]["away"]["name"]
+            home_score = f["goals"]["home"]
+            away_score = f["goals"]["away"]
+            print(f"  {home} {home_score} - {away_score} {away}")
+
+    print("\nUpcoming Matches:")
+    if not future_matches:
+        print("  No upcoming matches scheduled.")
+    else:
+        for f in future_matches:
+            home = f["teams"]["home"]["name"]
+            away = f["teams"]["away"]["name"]
+            date = f["fixture"]["date"]
+            print(f"  {home} vs {away} (Date: {date[:16]})")
+
+
+    print("\nRecent Match News:")
+    articles = api.get_news(team_name)
+    if not articles:
+        print("No recent news found.")
+    else:
+        for idx, art in enumerate(articles, 1):
+            print(f"  {idx}. {art['title']}")
+            print(f"     Source: {art['source']['name']} | Link: {art['url']}")
+    
+def player_menu():
+    print("\n--- Player Info Menu ---")
+    name = input("Enter player last name (min 3 characters): ").strip()
+    if len(name) < 3:
+        print("Search query must be at least 3 characters.")
+        return
+        
+    print("Searching players...")
+    results = api.search_player(name)
+    if not results:
+        print("No player found.")
+        return
+        
+    # selecting from search results
+    print("\nSelect a player:")
+    for idx, item in enumerate(results, 1):
+        p = item["player"]
+        team_name = "Unknown"
+        if item.get("statistics"):
+            team_name = item["statistics"][0]["team"]["name"]
+        print(f"{idx}. {p['name']} (Nationality: {p['nationality']}, Team: {team_name})")
+        
+    sel = input("Enter choice: ").strip()
+    try:
+        player_idx = int(sel) - 1
+        selected = results[player_idx]
+    except (ValueError, IndexError):
+        print("Invalid choice.")
+        return
+        
+    p = selected["player"]
+    player_id = p["id"]
+    player_name = p["name"]
+    
+    # statistics
+    stats = selected.get("statistics", [])
+    games = 0
+    goals = 0
+    assists = 0
+    team_name = "Unknown"
+    
+    if stats:
+        s = stats[0]
+        team_name = s["team"]["name"]
+        games = s["games"]["appearences"] or 0
+        goals = s["goals"]["total"] or 0
+        assists = s["goals"]["assists"] or 0
+        
+    while True:
+        is_fav = database.is_player_favorite(player_id)
+        fav_label = "[Favorite]" if is_fav else "[Not Favorite]"
+        print(f"\n--- {player_name} {fav_label} ---")
+        print(f"Team: {team_name}")
+        print(f"Nationality: {p['nationality']}")
+        print(f"Age: {p['age']}")
+        print(f"Matches Played: {games}")
+        print(f"Goals: {goals}")
+        print(f"Assists: {assists}")
+        print("\n1. Toggle Favorite")
+        print("2. Back to Main Menu")
+        
+        choice = input("Enter option: ").strip()
+        if choice == "1":
+            if is_fav:
+                database.remove_player(player_id)
+                print("Removed from favorites.")
+            else:
+                database.add_player(player_id, player_name)
+                print("Added to favorites.")
+        elif choice == "2":
+            break
+
+def current_games_menu():
+    print("\n--- Current Games Menu ---")
+    print("Checking live games...")
+    live_games = api.fetch_live_scores()
+
+    if live_games:
+        for f in live_games:
+            home = f["teams"]["home"]["name"]
+            away = f["teams"]["away"]["name"]
+            home_score = f["goals"]["home"]
+            away_score = f["goals"]["away"]
+            time = f["fixture"]["status"]["elapsed"]
+            print(f"[LIVE {time}'] {home} {home_score} - {away_score} {away}")
 
 home_menu()
