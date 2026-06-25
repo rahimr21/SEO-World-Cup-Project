@@ -277,5 +277,26 @@ def current_games_menu():
             away_score = f["goals"]["away"]
             time = f["fixture"]["status"]["elapsed"]
             print(f"[LIVE {time}'] {home} {home_score} - {away_score} {away}")
+        else:
+            print("No live games currently.")
+
+def favorites_menu():
+    print("\n--- Favorites Menu ---")
+    teams = database.get_teams()
+    players = database.get_players()
+
+    print("\nFavorite Teams:")
+    if not teams:
+        print("  None")
+    else:
+        for t_id, name in teams:
+            print(f"  - {name} (ID: {t_id})")
+            
+    print("\nFavorite Players:")
+    if not players:
+        print("  None")
+    else:
+        for p_id, name in players:
+            print(f"  - {name} (ID: {p_id})")
 
 home_menu()
